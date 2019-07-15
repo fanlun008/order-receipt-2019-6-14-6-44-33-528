@@ -18,41 +18,25 @@ public class OrderReceipt {
         StringBuilder output = new StringBuilder();
 
         // print headers
-        printHeaders(output);
-
-        // print date, bill no, customer name
-//        output.append("Date - " + order.getDate();
-        appendNameAndAddress(output, order);
-//        output.append(order.getCustomerLoyaltyNumber());
+        printHeadersInfo(output);
 
         // prints lineItems
-        double totSalesTx = 0d;
-        double tot = 0d;
+        double totSalesTax = 0d;
+        double totalAmount = 0d;
         for (LineItem lineItem : order.getLineItems()) {
             appendLineItemInfo(lineItem, output);
-
-            // calculate sales tax @ rate of 10%
             double salesTax = getSalesTax(lineItem);
-            totSalesTx += salesTax;
-
-            // calculate total amount of lineItem = price * quantity + 10 % sales tax
-            tot += lineItem.totalAmount() + salesTax;
+            totSalesTax += salesTax;
+            totalAmount += lineItem.totalAmount() + salesTax;
         }
-
-        // prints the state tax
-        printsTheStateTax(output, totSalesTx);
-
-        // print total amount
-        printTotalAmount(output, tot);
+        printStateTaxAndTotalAmount(output, totSalesTax, totalAmount);
         return output.toString();
     }
 
-    private void printTotalAmount(StringBuilder output, double tot) {
-        output.append("Total Amount").append('\t').append(tot);
-    }
 
-    private void printsTheStateTax(StringBuilder output, double totSalesTx) {
-        output.append("Sales Tax").append('\t').append(totSalesTx);
+    private void printStateTaxAndTotalAmount(StringBuilder output, double salesTax, double totalAmount) {
+        output.append("Sales Tax").append('\t').append(salesTax);
+        output.append("Total Amount").append('\t').append(totalAmount);
     }
 
     public Double getSalesTax(LineItem lineItem) {
@@ -68,17 +52,12 @@ public class OrderReceipt {
         output.append('\t');
         output.append(lineItem.totalAmount());
         output.append('\n');
-//        output.append(String.format("%1$s\t%2$f\t%3$d\t%4$f\n", lineItem.getDescription(),
-//                lineItem.getPrice(), lineItem.getQuantity(), lineItem.totalAmount()));
     }
 
-    private void appendNameAndAddress(StringBuilder output, Order order) {
+
+    private void printHeadersInfo(StringBuilder output) {
+        output.append("======Printing Orders======\n");
         output.append(order.getCustomerName());
         output.append(order.getCustomerAddress()+"\n");
-    }
-
-
-    private void printHeaders(StringBuilder output) {
-        output.append("======Printing Orders======\n");
     }
 }
